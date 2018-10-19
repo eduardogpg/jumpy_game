@@ -1,4 +1,5 @@
 from .settings import *
+from .player import Player
 import pygame
 
 class Jumpy:
@@ -13,7 +14,11 @@ class Jumpy:
         pygame.display.set_caption(TITLE)
 
     def new(self):
+        self.player = Player()
+
         self.all_sprites = pygame.sprite.Group()
+        self.all_sprites.add(self.player)
+
         self.run()
 
     def run(self):
@@ -32,7 +37,7 @@ class Jumpy:
                 self.running = False
 
     def update(self):
-        pass
+        self.all_sprites.update()
 
     def draw(self):
         self.screen.fill(BLACK)
