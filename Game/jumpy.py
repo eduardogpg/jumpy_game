@@ -1,5 +1,5 @@
 from .settings import *
-from .player import Player
+from .player import Player, Platform
 import pygame
 
 class Jumpy:
@@ -10,14 +10,17 @@ class Jumpy:
         self.screen = pygame.display.set_mode( (WIDTH, HEIGHT ))
         self.clock =  pygame.time.Clock()
         self.running = True
+        self.playing = False
 
         pygame.display.set_caption(TITLE)
 
     def new(self):
-        self.player = Player()
+        self.player = Player( WIDTH / 2, HEIGHT - 80 )
+        self.platform = Platform(0, HEIGHT - 40, WIDTH, 40)
 
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
+        self.all_sprites.add(self.platform)
 
         self.run()
 

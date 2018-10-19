@@ -1,38 +1,45 @@
 import pygame
 from .settings import *
 
-vec = pygame.math.Vector2
-
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, pos_x=0, pos_y=0):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.Surface( (30, 40) )
+        self.image = pygame.Surface((PLAYER_WIDTH, PLAYER_HEIGHT))
         self.image.fill(YELLOW)
+
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
 
-        self.pos = vec(WIDTH / 2, HEIGHT / 2)
-        self.vel = vec(0, 0)
-        self.acc = vec(0, 0)
+        self.vel = 0
 
-    def update(self):
-        self.acc = vec(0, 0)
+        self.jump = False
+
+    def jump(self):
+        pass
+
+    def move(self):
         keys = pygame.key.get_pressed()
-
         if keys[pygame.K_LEFT]:
-            self.acc.x = -PLAYER_ACC
+            self.pos_x -= 10
+
         if keys[pygame.K_RIGHT]:
-            self.acc.x = PLAYER_ACC
+            self.pos_x += 10
+            
+    def update(self):
+        self.move()
 
-        self.acc += self.vel * PLAYER_FRICTION
-        self.vel += self.acc
-        self.pos += self.vel + 0.5 * self.acc
+        self.rect.x = self.pos_x
+        self.rect.y = self.pos_y
 
-        if self.pos.x > WIDTH:
-            self.pos.x = 0
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, width, height):
+        pygame.sprite.Sprite.__init__(self)
 
-        if self.pos.x < 0:
-            self.pos.x = WIDTH
+        self.image = pygame.Surface((width, height))
+        self.image.fill(GREEN)
 
-        self.rect.center = self.pos
+        self.rect = self.image.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
