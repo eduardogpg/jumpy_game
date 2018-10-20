@@ -1,5 +1,7 @@
 from .settings import *
-from .player import Player, Platform
+from .player import Player
+from .platform import Platform
+
 import pygame
 
 class Jumpy:
@@ -15,12 +17,19 @@ class Jumpy:
         pygame.display.set_caption(TITLE)
 
     def new(self):
-        self.player = Player( WIDTH / 2, HEIGHT - 80 )
+        self.player = Player(self, WIDTH / 2, HEIGHT / 2 )
         self.platform = Platform(0, HEIGHT - 40, WIDTH, 40)
+        p2 = Platform(WIDTH / 2 - 50, HEIGHT * 3 / 4, 100, 20)
 
-        self.all_sprites = pygame.sprite.Group()
-        self.all_sprites.add(self.player)
-        self.all_sprites.add(self.platform)
+        self.sprites = pygame.sprite.Group()
+        self.platforms = pygame.sprite.Group()
+
+        self.sprites.add(self.player)
+        self.sprites.add(self.platform)
+        self.sprites.add(p2)
+
+        self.platforms.add(self.platform)
+        self.platforms.add(p2)
 
         self.run()
 
@@ -39,11 +48,21 @@ class Jumpy:
                     self.playing = False
                 self.running = False
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.jump()
+
     def update(self):
-        self.all_sprites.update()
+        self.sprites.update()
+        #check if player hits a platform - only if falling
+        if self.player.vel.y > 0:
+            hits = pygame.sprite.spritecollide(self.player, self.platforms, False)
+            if hits:
+                self.player.pos.y = hits[0].rect.top + 1
+                self.player.vel.y = 0
 
     def draw(self):
         self.screen.fill(BLACK)
-        self.all_sprites.draw(self.screen)
+        self.sprites.draw(self.screen)
 
         pygame.display.flip()
